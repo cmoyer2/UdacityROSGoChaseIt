@@ -22,6 +22,8 @@ void drive_robot(float lin_x, float ang_z)
     }
 }
 
+// Depending on the white ball position, call the drive_robot function and pass velocities to it
+// Request a stop when there's no white ball seen by the camera
 void execute_drive(direction move) {
 
 	if(move == LEFT) {
@@ -39,6 +41,7 @@ void execute_drive(direction move) {
 	}
 }
 
+// Identify if this pixel falls in the left, mid, or right side of the image
 direction determine_direction(int position, int img_width) {
 	int location = position - (((int)position/img_width) * img_width);
 	direction move;
@@ -62,16 +65,11 @@ void process_image_callback(const sensor_msgs::Image img)
     bool foundWhiteBall = false;
     int ball_position = 0;
 
-    // TODO: Loop through each pixel in the image and check if there's a bright white one
-    // Then, identify if this pixel falls in the left, mid, or right side of the image
-    // Depending on the white ball position, call the drive_bot function and pass velocities to it
-    // Request a stop when there's no white ball seen by the camera
-    //ROS_INFO("Img Height:%1.2f", (float)img.height);
-    //ROS_INFO("Img Step:%1.2f", (float)img.step);
+    // Loop through each pixel in the image and check if there's a bright white one
     for (int i = 0; i < img.height * img.step; i++) {
         if (img.data[i] == white_pixel) {
             foundWhiteBall = true;
-	    ball_position = i;
+	          ball_position = i;
             ROS_INFO("Found white ball at %1.2f", (float)i);
             break;
         }
