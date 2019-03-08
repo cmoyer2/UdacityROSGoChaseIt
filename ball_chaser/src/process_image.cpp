@@ -25,14 +25,23 @@ void drive_robot(float lin_x, float ang_z)
 void execute_drive(direction move) {
 
 	if(move == LEFT) {
-
-	} else if(move == 
+		ROS_INFO("Move left");
+		drive_robot(0.0, 0.5);
+	} else if(move == FORWARD) {
+		ROS_INFO("Move forward");
+		drive_robot(0.5, 0.0);
+	} else if(move == RIGHT) {
+		ROS_INFO("Move right");
+		drive_robot(0.0, -0.5);
+	} else {
+		ROS_INFO("Stopping");
+		drive_robot(0.0,0.0);
+	}
 }
 
 direction determine_direction(int position, int img_width) {
 	int location = position - (((int)position/img_width) * img_width);
 	direction move;
-	//ROS_INFO("Location:%1.2f",(float)location);
 	if(location > 0 && location <= (img_width * .35)) {
 		move = LEFT;
 	} else if (location > (img_width * .35) && location <= (img_width * .65)) {
@@ -42,7 +51,6 @@ direction determine_direction(int position, int img_width) {
 	} else {
 		move = NONE;
 	}
-	ROS_INFO("%s", std::to_string(move));
 	return move;
 }
 
@@ -69,7 +77,8 @@ void process_image_callback(const sensor_msgs::Image img)
         }
     }
     direction move = determine_direction(ball_position, img.step);
-    //ROS_INFO("%s", std::to_string(move));
+
+    execute_drive(move);
 }
 
 int main(int argc, char** argv)
